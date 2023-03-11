@@ -1,5 +1,13 @@
+import redis
+from redis_lru import RedisLRU
+
+
 import part_1.connect
 from part_1.models import Author, Quote
+
+
+client = redis.StrictRedis(host="localhost", port=6379, password=None)
+cache = RedisLRU(client)
 
 
 def create_autor(fullname, born_date, born_location, description):
@@ -22,6 +30,7 @@ def create_quotes(tags, author, quote):
         print(e)
 
 
+@cache
 def read_author_by_id(id_):
     result = ''
     try:
@@ -32,6 +41,7 @@ def read_author_by_id(id_):
     return result
 
 
+@cache
 def read_quotes_by_name(name):
     result = []
     try:
@@ -44,7 +54,7 @@ def read_quotes_by_name(name):
         print(e)
     return result
 
-
+@cache
 def read_quotes_by_tag(tag):
     result = []
     try:
